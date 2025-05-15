@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlantic Ocean Exploitation Research | Moroccan Coast</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#3A7CA5',
+                        accent: '#2F6690',
+                        dark: '#181818',
+                        light: '#FFFFFF',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .nav-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #5D5CDE;
+            transition: width 0.3s ease;
+        }
+        
+        .dark .nav-item::after {
+            background-color: #8584E8;
+        }
+        
+        .nav-item:hover::after, .nav-item.active::after {
+            width: 100%;
+        }
+        
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .company-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .company-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .company-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tech-item {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            transform: translateX(5px);
+            opacity: 0.9;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-dark dark:text-gray-100">
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <svg class="w-8 h-8 text-primary dark:text-primary" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-3.757-4.243zM9 2a8 8 0 100 16A8 8 0 009 2z" clip-rule="evenodd" />
+                </svg>
+                <h1 class="ml-2 text-xl font-bold text-primary dark:text-primary">Atlantic Ocean Research</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#overview" class="nav-item py-1 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="overview">Overview</a>
+                <a href="#countries" class="nav-item py-1 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="countries">Countries & Companies</a>
+                <a href="#technologies" class="nav-item py-1 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="technologies">Technologies</a>
+                <a href="#economic" class="nav-item py-1 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="economic">Economic Impacts</a>
+                <a href="#environmental" class="nav-item py-1 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="environmental">Environmental Impacts</a>
+                <a href="#agreements" class="nav-item py-1 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="agreements">Agreements</a>
+                <a href="#statistics" class="nav-item py-1 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="statistics">Statistics</a>
+            </nav>
+            <div class="flex items-center">
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <!-- Sun icon -->
+                    <svg id="light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" />
+                    </svg>
+                    <!-- Moon icon -->
+                    <svg id="dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                </button>
+                <button id="mobile-menu-button" class="md:hidden ml-2 p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="md:hidden hidden px-4 py-3 bg-white dark:bg-gray-900 shadow-md">
+            <a href="#overview" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="overview">Overview</a>
+            <a href="#countries" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="countries">Countries & Companies</a>
+            <a href="#technologies" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="technologies">Technologies</a>
+            <a href="#economic" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="economic">Economic Impacts</a>
+            <a href="#environmental" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="environmental">Environmental Impacts</a>
+            <a href="#agreements" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="agreements">Agreements</a>
+            <a href="#statistics" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary" data-page="statistics">Statistics</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Overview Page -->
+        <section id="overview" class="page active">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-primary dark:text-primary">Marine Resources of the Atlantic Ocean off Morocco</h2>
+                <p class="mt-4 text-gray-600 dark:text-gray-400">The Atlantic waters off the Moroccan coast are rich in diverse marine resources that contribute significantly to both local economies and global markets.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div class="flex items-center mb-4">
+                        <svg class="w-8 h-8 text-primary dark:text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+                        </svg>
+                        <h3 class="text-xl font-bold ml-2">Fisheries</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400">One of the most productive fishing zones in Africa, yielding over 1.5 million tons of fish annually. Key species include sardines, mackerel, tuna, and various crustaceans.</p>
+                </div>
+
+                <div class="card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div class="flex items-center mb-4">
+                        <svg class="w-8 h-8 text-primary dark:text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                        </svg>
+                        <h3 class="text-xl font-bold ml-2">Oil & Gas</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400">Offshore exploration has identified potential petroleum reserves that are increasingly becoming the focus of international companies seeking to expand their operations.</p>
+                </div>
+
+                <div class="card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div class="flex items-center mb-4">
+                        <svg class="w-8 h-8 text-primary dark:text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                        </svg>
+                        <h3 class="text-xl font-bold ml-2">Minerals</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400">Marine mineral resources include phosphates, iron ore, and potential rare earth elements found in deep-sea deposits, making the region attractive for mining interests.</p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Economic Significance</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-lg mb-2">Global Market Contribution</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                            <li>Morocco accounts for approximately 3.3% of global marine fish production</li>
+                            <li>Major exporter of sardines and mackerel to European and African markets</li>
+                            <li>Growing contribution to global seafood value chains</li>
+                            <li>Emerging player in marine biotechnology and pharmaceutical research</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-2">Local Economic Impact</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                            <li>Fishing sector employs over 170,000 people directly</li>
+                            <li>Supporting industries create additional 500,000 jobs</li>
+                            <li>Contributes approximately 2.3% to national GDP</li>
+                            <li>Coastal tourism dependent on marine ecosystems generates $7.5B annually</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4">Strategic Importance</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">The Atlantic waters off Morocco represent a strategic zone for several reasons:</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Geographic Position</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Located at the crossroads of Europe, Africa, and the Americas, providing critical shipping routes.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Resource Diversity</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Offers multiple resource types from renewable fisheries to non-renewable mineral deposits.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Political Considerations</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Zone of interest in ongoing discussions about maritime boundaries and resource rights.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Countries & Companies Page -->
+        <section id="countries" class="page">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-primary dark:text-primary">Countries & Companies Involved</h2>
+                <p class="mt-4 text-gray-600 dark:text-gray-400">Multiple nations and corporations maintain interests in the marine resources off Morocco's Atlantic coast, pursuing various exploitation activities.</p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-6">Key Countries with Marine Interests</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="flex items-start">
+                        <div class="w-12 h-8 mr-3 flex-shrink-0 bg-blue-700 rounded"></div>
+                        <div>
+                            <h4 class="font-semibold">Spain</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Primary focus on fishing rights and seafood processing. Historical ties to the region.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-12 h-8 mr-3 flex-shrink-0 bg-blue-900 rounded"></div>
+                        <div>
+                            <h4 class="font-semibold">France</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Invests in offshore oil exploration and petroleum development projects.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-12 h-8 mr-3 flex-shrink-0 bg-red-600 rounded"></div>
+                        <div>
+                            <h4 class="font-semibold">China</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Expanding fishing fleet operations and investment in port infrastructure.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-12 h-8 mr-3 flex-shrink-0 bg-red-white-blue rounded"></div>
+                        <div>
+                            <h4 class="font-semibold">Russia</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Fishing agreements and growing interest in seabed mineral exploration.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-12 h-8 mr-3 flex-shrink-0 bg-red-white-blue-2 rounded"></div>
+                        <div>
+                            <h4 class="font-semibold">United States</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Corporate investment in energy exploration and technological partnerships.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-12 h-8 mr-3 flex-shrink-0 bg-green-600 rounded"></div>
+                        <div>
+                            <h4 class="font-semibold">Morocco</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">National initiatives for sustainable resource management and economic development.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-6">Major Companies Operating in the Region</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Fishing Companies -->
+                    <div class="company-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h4 class="text-lg font-semibold mb-3 text-primary dark:text-primary">Fishing Sector</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <h5 class="font-medium">Grupo Conservas Garavilla (Spain)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: Tuna fishing and processing</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Advanced purse seine vessels</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: European seafood distribution</p>
+                            </div>
+                            <div>
+                                <h5 class="font-medium">CNFC Overseas Fishery (China)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: Deep-sea fishing fleet</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Factory ships with onboard processing</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: Global exports with focus on Asian markets</p>
+                            </div>
+                            <div>
+                                <h5 class="font-medium">Omnium Marocain de Pêche (Morocco)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: Sardine and mackerel fishing</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Coastal fishing fleet with cold storage</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: Domestic supply and Mediterranean export</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Energy Companies -->
+                    <div class="company-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h4 class="text-lg font-semibold mb-3 text-primary dark:text-primary">Energy Sector</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <h5 class="font-medium">Total Energies (France)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: Offshore oil exploration</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Deep-water drilling platforms</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: Global petroleum distribution</p>
+                            </div>
+                            <div>
+                                <h5 class="font-medium">Chariot Oil & Gas (UK)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: Exploration licenses in Atlantic blocks</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Seismic surveying and exploratory wells</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: Development-stage focused on future production</p>
+                            </div>
+                            <div>
+                                <h5 class="font-medium">Office National des Hydrocarbures et des Mines (Morocco)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: National resource oversight and partnerships</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Collaborative ventures with international firms</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: Strategic development of national resources</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mining/Minerals Companies -->
+                    <div class="company-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h4 class="text-lg font-semibold mb-3 text-primary dark:text-primary">Mineral Sector</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <h5 class="font-medium">OCP Group (Morocco)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: Phosphate mining and processing</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Advanced beneficiation methods</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: Global fertilizer production</p>
+                            </div>
+                            <div>
+                                <h5 class="font-medium">Deep Green Metals (Canada)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: Exploration for polymetallic nodules</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Autonomous underwater collectors</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: Rare earth elements for tech manufacturing</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Research and Technology Companies -->
+                    <div class="company-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h4 class="text-lg font-semibold mb-3 text-primary dark:text-primary">Research & Technology</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <h5 class="font-medium">Institut National de Recherche Halieutique (Morocco)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: Marine resource assessment and monitoring</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Oceanographic vessels and monitoring systems</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: Research for sustainable fisheries management</p>
+                            </div>
+                            <div>
+                                <h5 class="font-medium">Blue Ocean Monitoring (Australia)</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Operations: Environmental impact assessment</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Technology: Autonomous underwater vehicles for data collection</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Market: Services for oil, gas, and fishing industries</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4">International Collaborations</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Several notable joint ventures and collaborative projects illustrate the international approach to resource exploitation:</p>
+                <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                    <li>Morocco-EU Fisheries Partnership Agreement - Providing European vessels access to Moroccan waters in exchange for financial compensation and sectoral support</li>
+                    <li>Morocco-Russia Scientific Cooperation - Joint oceanographic research initiatives to assess fish stocks and marine biodiversity</li>
+                    <li>Morocco-China Blue Partnership - Development of port facilities and processing infrastructure for marine products</li>
+                    <li>Morocco-US Technology Transfer - American technology firms providing equipment and training for sustainable fishing methods</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Technologies Page -->
+        <section id="technologies" class="page">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-primary dark:text-primary">Advanced Technologies in Marine Resource Extraction</h2>
+                <p class="mt-4 text-gray-600 dark:text-gray-400">The exploitation of marine resources off the Moroccan Atlantic coast increasingly relies on sophisticated technologies that enhance efficiency, reduce environmental impact, and maximize yield.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="lg:col-span-1">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 h-full">
+                        <h3 class="text-xl font-bold mb-4">Technology Categories</h3>
+                        <ul class="space-y-3">
+                            <li class="tech-item p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">Remote Sensing & Monitoring</span>
+                            </li>
+                            <li class="tech-item p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">Extraction Equipment</span>
+                            </li>
+                            <li class="tech-item p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">Processing Technologies</span>
+                            </li>
+                            <li class="tech-item p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">Navigation Systems</span>
+                            </li>
+                            <li class="tech-item p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">Sustainable Practices</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-bold mb-4">Key Technological Innovations</h3>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-primary dark:text-primary">Fishing Technology</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h5 class="font-medium mb-2">Satellite-Assisted Fish Finding</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Uses thermal imaging and chlorophyll detection to locate fish schools with 40% greater accuracy than traditional methods.</p>
+                                </div>
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h5 class="font-medium mb-2">Selective Fishing Gear</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Modified nets with escape panels reduce bycatch by up to 30%, improving sustainability and reducing sorting time.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-primary dark:text-primary">Oil & Gas Exploration</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h5 class="font-medium mb-2">3D & 4D Seismic Imaging</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Produces detailed subsurface maps that increase drilling success rates from 35% to over 70% and reduce exploratory well requirements.</p>
+                                </div>
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h5 class="font-medium mb-2">Automated Platform Operations</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Remote-controlled drilling and production systems reduce personnel requirements by 40% while improving safety metrics.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-primary dark:text-primary">Mineral Extraction</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h5 class="font-medium mb-2">Autonomous Underwater Vehicles (AUVs)</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Self-navigating robots map the seafloor and collect mineral samples with minimal disturbance to marine habitats.</p>
+                                </div>
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h5 class="font-medium mb-2">Hydraulic Collection Systems</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Specialized equipment extracts minerals from the seafloor with filtration technology that returns sediment to its origin point.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-primary dark:text-primary">Monitoring & Research</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h5 class="font-medium mb-2">Environmental DNA Sampling</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Analyzes genetic material in seawater to monitor biodiversity and detect population changes without direct organism sampling.</p>
+                                </div>
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h5 class="font-medium mb-2">Smart Buoy Networks</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Deployed systems that continuously monitor water quality, currents, and marine life, transmitting real-time data to research centers.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Technology Impact Analysis</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-3">Efficiency Improvements</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                            <li>Reduced fuel consumption by 25-30% in fishing fleets</li>
+                            <li>Decreased exploration time for petroleum resources by 35%</li>
+                            <li>Improved yield from processing facilities by 20-25%</li>
+                            <li>Lower operational costs through automation and remote monitoring</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-3">Sustainability Benefits</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                            <li>Reduced bycatch in fishing operations</li>
+                            <li>Smaller environmental footprint of extraction activities</li>
+                            <li>Better adherence to catch quotas and protected species regulations</li>
+                            <li>Enhanced habitat and ecosystem monitoring capabilities</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-3">Market Advantages</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                            <li>Improved product quality and consistency</li>
+                            <li>Enhanced traceability for consumer markets</li>
+                            <li>Access to premium market segments for sustainably harvested products</li>
+                            <li>Reduced spoilage and waste in the supply chain</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4">Innovation Case Studies</h3>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Moroccan Smart Fishing Initiative</h4>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">A collaborative project between the Moroccan government and Spanish technology providers equipped 200 fishing vessels with integrated GPS, sonar, and digital logbooks. The system resulted in 28% higher catch efficiency while reducing fuel consumption by 32% and helping maintain sustainable fishing practices through real-time quota monitoring.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Total Energies' Automated Well Monitoring</h4>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">Implementation of AI-driven monitoring systems at offshore drilling sites has enabled predictive maintenance, reducing equipment failures by 45% and unplanned downtime by 60%. The technology combines sensor networks with machine learning to detect anomalies before they lead to operational or environmental issues.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">OCP's Phosphate Recovery Technology</h4>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">Development of specialized techniques for recovering phosphate from previously untappable marine deposits has increased accessible reserves by an estimated 15%. The process employs environmentally conscious extraction methods that minimize disturbance to the seabed while maximizing mineral recovery rates.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Economic Impacts Page -->
+        <section id="economic" class="page">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-primary dark:text-primary">Economic Impacts of Marine Resource Exploitation</h2>
+                <p class="mt-4 text-gray-600 dark:text-gray-400">The extraction and utilization of marine resources from the Atlantic Ocean have significant economic implications for Morocco at both national and local levels.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-4">National Economic Benefits</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold">GDP Contribution</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Marine sectors contribute approximately 2.3% to Morocco's overall GDP, with fishing alone accounting for 1.5%.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Export Revenue</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Marine products constitute 8.5% of Morocco's total exports by value, generating approximately $1.8 billion annually.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Tax Revenue</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Licensing fees, resource extraction taxes, and corporate taxes from marine operations contribute an estimated $450 million to national revenue.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Foreign Investment</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Marine sectors attract nearly $300 million in foreign direct investment annually, primarily in fishing infrastructure and offshore exploration.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div class="chart-container">
+                        <canvas id="economic-contribution-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-4">Employment Creation</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold">Direct Employment</h4>
+                            <p class="text-gray-600 dark:text-gray-400">The fishing sector directly employs approximately 170,000 people across the value chain, from harvesting to processing and distribution.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Indirect Employment</h4>
+                            <p class="text-gray-600 dark:text-gray-400">An additional 500,000 jobs are supported indirectly through related industries such as boat building, equipment manufacturing, and logistics.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Quality of Employment</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Modern fishing and extraction operations have increased the proportion of skilled technical positions, with average wages 15% higher than other industrial sectors.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Regional Distribution</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Employment is concentrated in coastal regions, with particular economic significance in areas with limited alternative industries.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <div class="chart-container">
+                        <canvas id="employment-sectors-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Socio-Economic Implications for Coastal Communities</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Income Stability</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Modern extraction technologies and improved resource management have reduced seasonal income fluctuations by 40% for fishing communities.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Infrastructure Development</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Resource exploitation has driven investment in port facilities, roads, and utilities in coastal regions, benefiting broader community development.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Social Services</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Revenue from marine industries has funded educational initiatives and healthcare facilities in previously underserved coastal communities.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Economic Challenges and Vulnerabilities</h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Resource Dependency</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Some coastal communities derive over 70% of their economic activity from marine resources, creating vulnerability to resource depletion or market fluctuations.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Market Volatility</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Seafood and mineral prices can fluctuate significantly on global markets, creating economic uncertainty for extraction industries.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Foreign Control</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Approximately 35% of the economic value from Morocco's marine resources is captured by foreign companies, reducing domestic economic benefits.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Climate Change Impacts</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Changing ocean conditions due to climate change threaten the long-term economic sustainability of marine resource exploitation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4">Economic Development Initiatives</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Several economic development programs aim to maximize the benefits of marine resources while addressing challenges:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Halieutis Plan</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">A national fisheries development strategy that aims to triple sector value by 2025 through modernization, sustainability measures, and market expansion.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Blue Belt Initiative</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Regional program focusing on sustainable ocean economy development with targeted investments in coastal communities.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Value Addition Programs</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Government incentives for domestic processing of marine resources to capture more economic value within Morocco.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Skill Development Partnerships</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Educational initiatives with international partners to develop technical expertise in marine resource management and advanced extraction technologies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Environmental Impacts Page -->
+        <section id="environmental" class="page">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-primary dark:text-primary">Environmental Impacts of Marine Resource Exploitation</h2>
+                <p class="mt-4 text-gray-600 dark:text-gray-400">The extraction of resources from the Atlantic Ocean off Morocco has significant environmental implications, affecting marine ecosystems in various ways.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-4">Observed Ecological Changes</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-primary dark:text-primary">Fish Stock Depletion</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Several commercially valuable species have experienced population declines, with sardine stocks showing a 15-20% reduction in certain fishing zones over the past decade.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-primary dark:text-primary">Habitat Disruption</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Bottom trawling and seabed mining operations have altered approximately 12% of the continental shelf habitat, affecting benthic ecosystems.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-primary dark:text-primary">Biodiversity Impacts</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Marine biodiversity assessments indicate a 7% decline in species richness in intensively exploited areas compared to marine protected zones.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-primary dark:text-primary">Pollution Concerns</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Increased shipping traffic and extraction activities have led to localized increases in noise pollution, affecting marine mammal behavior and communication patterns.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-4">Sector-Specific Impacts</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-primary dark:text-primary">Fishing Industry</h4>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400">
+                                <li>Bycatch of non-target species remains a challenge, with an estimated 8-12% of total catch comprising unintended species</li>
+                                <li>Gear abandonment contributes to ghost fishing problems, with approximately 350 tons of fishing gear lost annually</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-primary dark:text-primary">Oil & Gas Exploration</h4>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400">
+                                <li>Seismic surveying has been linked to temporary displacement of cetacean populations during survey periods</li>
+                                <li>Drilling operations create localized sediment disturbance affecting water quality within a 2-3km radius</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-primary dark:text-primary">Mineral Extraction</h4>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400">
+                                <li>Seabed mining pilot projects have shown recovery periods of 3-5 years for disturbed areas</li>
+                                <li>Sediment plumes from extraction activities can affect water clarity and photosynthetic activity</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Sustainability Practices and Mitigation Measures</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Marine Protected Areas</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Morocco has designated 2.5% of its Atlantic waters as protected zones with restricted exploitation. Plans exist to expand this to 10% by 2030.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Fishing Quotas and Seasons</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Implementation of science-based catch limits and seasonal restrictions has helped vulnerable species populations stabilize in managed zones.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Environmental Impact Assessments</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Mandatory assessments for all new extraction projects have resulted in modified operational plans with reduced ecological footprints.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Advanced Monitoring Systems</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Deployment of observation networks tracking key ecological indicators provides early warning of potential environmental concerns.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">By-catch Reduction Technology</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Introduction of modified fishing gear has reduced accidental capture of protected species by an estimated 35% in the past five years.</p>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Restoration Projects</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Active habitat restoration initiatives in previously degraded areas have demonstrated successful recovery metrics for benthic communities.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Certification and Standards</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Several international certification systems and standards are increasingly adopted in the region:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold">Marine Stewardship Council (MSC)</h4>
+                        <p class="text-gray-600 dark:text-gray-400">12% of Moroccan Atlantic fisheries have achieved MSC certification, with another 25% in assessment or improvement projects working toward certification.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold">ISO 14001 Environmental Management</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Major processing facilities and extraction operations increasingly implement ISO 14001 standards, with a 40% increase in certified operations since 2015.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold">OSPAR Convention Standards</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Offshore operations adhere to OSPAR guidelines for pollution prevention, with regular monitoring and reporting requirements.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold">FIP (Fishery Improvement Projects)</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Seven active FIPs are currently underway, involving major commercial species and focusing on data collection, management improvements, and gear modifications.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4">Climate Change Considerations</h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Observed Changes</h4>
+                        <p class="text-gray-600 dark:text-gray-400">The Atlantic waters off Morocco have experienced a mean temperature increase of 0.7°C over the past three decades, affecting species distribution and migration patterns.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Acidification Impacts</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Ocean acidification measurements show a pH decrease of 0.1 units since pre-industrial times, with potential effects on shellfish populations and coral ecosystems.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Adaptation Measures</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Resource management plans are increasingly incorporating climate change projections, with flexible approaches that can adjust to changing ecological conditions.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Carbon Footprint Reduction</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Industry initiatives to reduce the carbon footprint of extraction activities include fleet modernization programs and energy efficiency improvements in processing facilities.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- International Agreements Page -->
+        <section id="agreements" class="page">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-primary dark:text-primary">International Agreements and Regulations</h2>
+                <p class="mt-4 text-gray-600 dark:text-gray-400">A complex framework of international agreements, conventions, and domestic legislation governs the exploitation of marine resources off Morocco's Atlantic coast.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="lg:col-span-1">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 h-full">
+                        <h3 class="text-xl font-bold mb-4">Key International Frameworks</h3>
+                        <ul class="space-y-3">
+                            <li class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">United Nations Convention on the Law of the Sea (UNCLOS)</span>
+                            </li>
+                            <li class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">Morocco-EU Fisheries Partnership Agreement</span>
+                            </li>
+                            <li class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">Convention on Biological Diversity (CBD)</span>
+                            </li>
+                            <li class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">International Maritime Organization (IMO) Conventions</span>
+                            </li>
+                            <li class="p-2 bg-gray-100 dark:bg-gray-700 rounded">
+                                <span class="font-medium">Regional Fisheries Management Organizations (RFMOs)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-bold mb-4">Regulatory Framework Analysis</h3>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-primary dark:text-primary">UNCLOS Implementation</h4>
+                            <p class="text-gray-600 dark:text-gray-400 mb-2">Morocco ratified UNCLOS in 2007, establishing its:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                                <li>12 nautical mile territorial waters</li>
+                                <li>24 nautical mile contiguous zone</li>
+                                <li>200 nautical mile Exclusive Economic Zone (EEZ)</li>
+                            </ul>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">This framework grants Morocco sovereign rights over resources within these zones while establishing obligations for sustainable management.</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-primary dark:text-primary">Bilateral Fisheries Agreements</h4>
+                            <p class="text-gray-600 dark:text-gray-400">The Morocco-EU Fisheries Partnership Agreement, renewed in 2019, provides:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                                <li>Access for approximately 128 European vessels to Moroccan waters</li>
+                                <li>Financial compensation of €208 million over four years</li>
+                                <li>€16 million annually dedicated to developing the domestic fishing sector</li>
+                                <li>Catch quotas and restrictions on fishing zones and methods</li>
+                            </ul>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">Similar but smaller agreements exist with Russia, Japan, and other nations.</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-primary dark:text-primary">Conservation and Environmental Protection</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Multiple environmental agreements influence resource extraction:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                                <li>Convention on Biological Diversity commitments to protect marine ecosystems</li>
+                                <li>MARPOL Convention provisions limiting pollution from vessels</li>
+                                <li>Barcelona Convention protocols on Mediterranean protection (with implications for Atlantic policies)</li>
+                                <li>CITES restrictions on trade in endangered marine species</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Domestic Legislation and Enforcement</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold">Key National Laws</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                            <li>Maritime Fisheries Code (Law 1-73-255, updated 2019) - Comprehensive framework for fishing activities</li>
+                            <li>Environmental Protection Law (Law 11-03) - Covers marine environment protection</li>
+                            <li>Maritime Public Domain Law (Law 81-12) - Regulates activities in territorial waters</li>
+                            <li>Mining Code (Law 33-13) - Governs extraction of seabed minerals</li>
+                            <li>Hydrocarbon Law (Law 21-90, amended) - Regulates oil and gas exploration</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold">Enforcement Mechanisms</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                            <li>Royal Navy and Coast Guard patrol vessels conducting regular surveillance</li>
+                            <li>Vessel Monitoring System (VMS) tracking of commercial fishing vessels</li>
+                            <li>Observer programs with 15-20% coverage of industrial fishing operations</li>
+                            <li>Port inspections and catch documentation schemes</li>
+                            <li>Satellite monitoring of offshore extraction activities</li>
+                            <li>Administrative and criminal penalties for violations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Compliance Assessment</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Strengths</h4>
+                        <ul class="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                            <li>Strong legal framework aligned with international standards</li>
+                            <li>Improved monitoring capacity through technology adoption</li>
+                            <li>Transparent reporting on fisheries management measures</li>
+                            <li>Regular environmental impact assessments for extraction projects</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Challenges</h4>
+                        <ul class="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                            <li>Limited enforcement capacity in remote areas</li>
+                            <li>Instances of illegal, unreported, and unregulated (IUU) fishing persist</li>
+                            <li>Data gaps in certain fisheries and environmental monitoring</li>
+                            <li>Resource constraints for comprehensive compliance monitoring</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-2">Recent Improvements</h4>
+                        <ul class="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                            <li>35% increase in enforcement personnel since 2018</li>
+                            <li>Implementation of electronic catch documentation</li>
+                            <li>Expanded scientific research programs</li>
+                            <li>New penalties framework with stronger deterrent effect</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4">Emerging Legal Developments</h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">BBNJ Treaty Implications</h4>
+                        <p class="text-gray-600 dark:text-gray-400">The developing UN treaty on Biodiversity Beyond National Jurisdiction (BBNJ) will likely affect operations in areas adjacent to Morocco's EEZ, particularly regarding:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2">
+                            <li>Marine genetic resources management</li>
+                            <li>Environmental impact assessment requirements</li>
+                            <li>Marine protected area establishment in international waters</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Evolving EU Partnership</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Negotiations for the next renewal of the EU-Morocco Fisheries Partnership Agreement are expected to:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2">
+                            <li>Further strengthen environmental safeguards</li>
+                            <li>Increase the proportion of catch processed within Morocco</li>
+                            <li>Expand scientific cooperation for resource assessment</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Deep-Sea Mining Regulation</h4>
+                        <p class="text-gray-600 dark:text-gray-400">As international regulations for deep-sea mining continue to develop through the International Seabed Authority, Morocco is preparing domestic legislation to govern potential future operations in its EEZ.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Climate Change Adaptation Framework</h4>
+                        <p class="text-gray-600 dark:text-gray-400">Draft legislation currently under review aims to create a legal framework for climate change adaptation in marine sectors, including provisions for:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2">
+                            <li>Flexible quota systems responsive to ecosystem changes</li>
+                            <li>Enhanced monitoring requirements</li>
+                            <li>Support mechanisms for affected industries</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Page -->
+        <section id="statistics" class="page">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-primary dark:text-primary">Data and Statistics</h2>
+                <p class="mt-4 text-gray-600 dark:text-gray-400">Comprehensive data on the exploitation of marine resources from the Atlantic Ocean off Morocco reveals important trends in extraction volumes and economic value.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-4">Fisheries Production</h3>
+                    <div class="chart-container">
+                        <canvas id="fisheries-chart"></canvas>
+                    </div>
+                    <div class="mt-4 text-gray-600 dark:text-gray-400">
+                        <p>Annual fisheries production from Morocco's Atlantic waters has fluctuated between 1.2 and 1.5 million tons over the past decade, with small pelagic species (primarily sardines and mackerel) accounting for approximately 80% of total volume.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-4">Economic Value by Sector</h3>
+                    <div class="chart-container">
+                        <canvas id="economic-value-chart"></canvas>
+                    </div>
+                    <div class="mt-4 text-gray-600 dark:text-gray-400">
+                        <p>The total economic value generated from marine resources has shown a steady increase, reaching approximately $2.3 billion in 2022, with the greatest growth observed in processed seafood products and emerging offshore energy exploration.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold mb-3">Resource Extraction by Country</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="countries-chart"></canvas>
+                    </div>
+                    <div class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                        <p>Morocco's domestic fleet accounts for 65% of fish caught in its Atlantic waters, with EU vessels (primarily Spanish) representing 22%, followed by vessels from Russia (7%), China (4%), and other nations (2%).</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold mb-3">Export Destinations</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="exports-chart"></canvas>
+                    </div>
+                    <div class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                        <p>The European Union remains the primary export destination for Morocco's marine products (58%), followed by African markets (15%), Asia (12%), Middle East (8%), and others (7%).</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold mb-3">Industry Investment Trends</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="investment-chart"></canvas>
+                    </div>
+                    <div class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                        <p>Foreign direct investment in Morocco's marine sectors has grown at an average annual rate of 8.5% since 2015, with particular acceleration in offshore energy exploration and aquaculture development.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-xl font-bold mb-4">Key Metrics Table (2022)</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="bg-gray-100 dark:bg-gray-700">
+                                <th class="px-4 py-2 text-left">Resource Category</th>
+                                <th class="px-4 py-2 text-right">Volume Extracted</th>
+                                <th class="px-4 py-2 text-right">Economic Value (USD)</th>
+                                <th class="px-4 py-2 text-right">Employment</th>
+                                <th class="px-4 py-2 text-right">5-Year Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+                            <tr>
+                                <td class="px-4 py-2">Small Pelagic Fish</td>
+                                <td class="px-4 py-2 text-right">1,180,000 tons</td>
+                                <td class="px-4 py-2 text-right">$920 million</td>
+                                <td class="px-4 py-2 text-right">85,000</td>
+                                <td class="px-4 py-2 text-right">+4.2%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">Demersal Fish</td>
+                                <td class="px-4 py-2 text-right">145,000 tons</td>
+                                <td class="px-4 py-2 text-right">$380 million</td>
+                                <td class="px-4 py-2 text-right">32,000</td>
+                                <td class="px-4 py-2 text-right">-2.1%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">Cephalopods</td>
+                                <td class="px-4 py-2 text-right">75,000 tons</td>
+                                <td class="px-4 py-2 text-right">$450 million</td>
+                                <td class="px-4 py-2 text-right">28,000</td>
+                                <td class="px-4 py-2 text-right">+7.5%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">Crustaceans</td>
+                                <td class="px-4 py-2 text-right">25,000 tons</td>
+                                <td class="px-4 py-2 text-right">$290 million</td>
+                                <td class="px-4 py-2 text-right">15,000</td>
+                                <td class="px-4 py-2 text-right">+3.8%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">Seaweed/Algae</td>
+                                <td class="px-4 py-2 text-right">12,000 tons</td>
+                                <td class="px-4 py-2 text-right">$45 million</td>
+                                <td class="px-4 py-2 text-right">3,500</td>
+                                <td class="px-4 py-2 text-right">+12.3%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">Phosphate (Marine)</td>
+                                <td class="px-4 py-2 text-right">850,000 tons</td>
+                                <td class="px-4 py-2 text-right">$120 million</td>
+                                <td class="px-4 py-2 text-right">4,200</td>
+                                <td class="px-4 py-2 text-right">+1.5%</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">Offshore Oil (Exploration)</td>
+                                <td class="px-4 py-2 text-right">N/A (Exploration)</td>
+                                <td class="px-4 py-2 text-right">$95 million</td>
+                                <td class="px-4 py-2 text-right">2,800</td>
+                                <td class="px-4 py-2 text-right">+25.7%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-4">Sustainable Management Indicators</h3>
+                    <div class="chart-container">
+                        <canvas id="sustainability-chart"></canvas>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                        <p>Morocco has made significant progress in implementing sustainable resource management measures, with improvements in monitoring coverage, reduction of illegal fishing, and expansion of protected areas. However, challenges remain in certain fisheries that continue to experience overexploitation.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-4">Future Projections</h3>
+                    <div class="chart-container">
+                        <canvas id="projections-chart"></canvas>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                        <p>Economic modeling suggests potential for 15-20% growth in value from marine resources by 2030, primarily through increased processing of fishery products, development of aquaculture, and possible commercial production from offshore energy resources. These projections assume implementation of sustainable management practices.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4">Data Limitations and Research Needs</h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Current Data Gaps</h4>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400">
+                            <li>Limited stock assessments for certain deep-water and non-commercial species</li>
+                            <li>Incomplete monitoring of artisanal and small-scale fishing activities</li>
+                            <li>Insufficient data on ecosystem impacts of seabed mining exploratory activities</li>
+                            <li>Gaps in comprehensive economic value chain analysis</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Ongoing Research Initiatives</h4>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400">
+                            <li>Comprehensive marine biodiversity assessment program launched in 2021</li>
+                            <li>Joint Morocco-EU project mapping essential fish habitats</li>
+                            <li>Development of integrated data platform for resource management</li>
+                            <li>Climate change impact modeling specific to the region's marine resources</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-primary dark:text-primary">Methodological Notes</h4>
+                        <p class="text-gray-600 dark:text-gray-400">The statistics presented in this report are compiled from multiple sources including:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2">
+                            <li>Moroccan Department of Maritime Fisheries annual reports</li>
+                            <li>FAO Global Fishery and Aquaculture Production Statistics</li>
+                            <li>EU fisheries partnership agreement monitoring data</li>
+                            <li>Independent scientific surveys and assessments</li>
+                            <li>Economic analysis from international financial institutions</li>
+                        </ul>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2">Where data conflicts exist, priority is given to officially verified national statistics with peer-reviewed scientific validation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 dark:bg-gray-900 py-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center text-gray-600 dark:text-gray-400">
+                <p>&copy; 2023 Atlantic Ocean Research Initiative. Data presented for informational purposes.</p>
+                <p class="mt-2 text-sm">This research compilation examines the exploitation of marine resources in the Atlantic Ocean off Morocco's coast.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Check for dark mode preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('light-icon').classList.remove('hidden');
+        } else {
+            document.getElementById('dark-icon').classList.remove('hidden');
+        }
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('light-icon').classList.remove('hidden');
+                document.getElementById('dark-icon').classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('dark-icon').classList.remove('hidden');
+                document.getElementById('light-icon').classList.add('hidden');
+            }
+            updateChartColors();
+        });
+
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            document.getElementById('light-icon').classList.toggle('hidden');
+            document.getElementById('dark-icon').classList.toggle('hidden');
+            updateChartColors();
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Navigation
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('[data-page]');
+        const mobileNavLinks = document.querySelectorAll('#mobile-menu [data-page]');
+
+        function navigateToPage(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Close mobile menu after navigation
+            document.getElementById('mobile-menu').classList.add('hidden');
+            
+            // Update URL hash
+            window.location.hash = pageId;
+        }
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.getAttribute('data-page');
+                navigateToPage(pageId);
+            });
+        });
+        
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.getAttribute('data-page');
+                navigateToPage(pageId);
+            });
+        });
+        
+        // Handle direct navigation from URL hash
+        if (window.location.hash) {
+            const pageId = window.location.hash.substring(1);
+            if (document.getElementById(pageId)) {
+                navigateToPage(pageId);
+            }
+        }
+
+        // Chart configurations
+        let charts = {};
+        
+        function getChartColors() {
+            const isDark = document.documentElement.classList.contains('dark');
+            return {
+                bgColor: isDark ? '#1e293b' : '#fff',
+                textColor: isDark ? '#f1f5f9' : '#334155',
+                gridColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                colors: [
+                    '#5D5CDE', '#3A7CA5', '#2F6690', '#F25F5C', '#FFE066', '#70C1B3', '#247BA0',
+                    '#FF6B6B', '#4ECDC4', '#A9E5BB', '#FCF6BD', '#D0F4DE'
+                ]
+            };
+        }
+        
+        function updateChartColors() {
+            const colors = getChartColors();
+            
+            Object.values(charts).forEach(chart => {
+                if (!chart) return;
+                
+                chart.options.plugins.legend.labels.color = colors.textColor;
+                chart.options.scales.x.ticks.color = colors.textColor;
+                chart.options.scales.x.grid.color = colors.gridColor;
+                chart.options.scales.y.ticks.color = colors.textColor;
+                chart.options.scales.y.grid.color = colors.gridColor;
+                
+                chart.update();
+            });
+        }
+        
+        function initCharts() {
+            const colors = getChartColors();
+            
+            // Economic contribution chart
+            const economicCtx = document.getElementById('economic-contribution-chart');
+            if (economicCtx) {
+                charts.economic = new Chart(economicCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Fishing', 'Processing', 'Oil & Gas', 'Minerals', 'Tourism', 'Other'],
+                        datasets: [{
+                            label: 'GDP Contribution (Millions USD)',
+                            data: [620, 450, 190, 180, 580, 280],
+                            backgroundColor: colors.colors,
+                            borderColor: 'rgba(0, 0, 0, 0.1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: colors.textColor
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Employment sectors chart
+            const employmentCtx = document.getElementById('employment-sectors-chart');
+            if (employmentCtx) {
+                charts.employment = new Chart(employmentCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Harvesting', 'Processing', 'Distribution', 'Support Services', 'Research'],
+                        datasets: [{
+                            label: 'Employment Distribution',
+                            data: [45, 30, 12, 10, 3],
+                            backgroundColor: colors.colors,
+                            borderColor: colors.bgColor,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: colors.textColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Fisheries chart
+            const fisheriesCtx = document.getElementById('fisheries-chart');
+            if (fisheriesCtx) {
+                charts.fisheries = new Chart(fisheriesCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'],
+                        datasets: [{
+                            label: 'Small Pelagics',
+                            data: [950, 980, 1020, 980, 1150, 1080, 1120, 1180],
+                            borderColor: colors.colors[0],
+                            backgroundColor: 'rgba(93, 92, 222, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }, {
+                            label: 'Demersal Fish',
+                            data: [160, 155, 145, 140, 135, 140, 150, 145],
+                            borderColor: colors.colors[1],
+                            backgroundColor: 'rgba(58, 124, 165, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }, {
+                            label: 'Cephalopods',
+                            data: [65, 60, 70, 65, 75, 70, 75, 75],
+                            borderColor: colors.colors[2],
+                            backgroundColor: 'rgba(47, 102, 144, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: colors.textColor
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw} thousand tons`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Thousand Tons',
+                                    color: colors.textColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Economic value chart
+            const economicValueCtx = document.getElementById('economic-value-chart');
+            if (economicValueCtx) {
+                charts.economicValue = new Chart(economicValueCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'],
+                        datasets: [{
+                            label: 'Fisheries & Seafood',
+                            data: [1450, 1520, 1580, 1650, 1720, 1680, 1880, 2040],
+                            backgroundColor: colors.colors[0]
+                        }, {
+                            label: 'Minerals & Energy',
+                            data: [110, 130, 150, 160, 170, 180, 195, 215],
+                            backgroundColor: colors.colors[1]
+                        }, {
+                            label: 'Other Marine Resources',
+                            data: [30, 35, 40, 42, 45, 40, 43, 45],
+                            backgroundColor: colors.colors[2]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: colors.textColor
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: $${context.raw} million`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Million USD',
+                                    color: colors.textColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Countries chart
+            const countriesCtx = document.getElementById('countries-chart');
+            if (countriesCtx) {
+                charts.countries = new Chart(countriesCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Morocco', 'EU (Spain)', 'Russia', 'China', 'Others'],
+                        datasets: [{
+                            data: [65, 22, 7, 4, 2],
+                            backgroundColor: colors.colors,
+                            borderColor: colors.bgColor,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: colors.textColor
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Exports chart
+            const exportsCtx = document.getElementById('exports-chart');
+            if (exportsCtx) {
+                charts.exports = new Chart(exportsCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['European Union', 'Africa', 'Asia', 'Middle East', 'Others'],
+                        datasets: [{
+                            data: [58, 15, 12, 8, 7],
+                            backgroundColor: colors.colors,
+                            borderColor: colors.bgColor,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: colors.textColor
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Investment chart
+            const investmentCtx = document.getElementById('investment-chart');
+            if (investmentCtx) {
+                charts.investment = new Chart(investmentCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'],
+                        datasets: [{
+                            label: 'Foreign Direct Investment',
+                            data: [180, 190, 210, 230, 250, 265, 285, 300],
+                            borderColor: colors.colors[0],
+                            backgroundColor: 'rgba(93, 92, 222, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `FDI: $${context.raw} million`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Sustainability chart
+            const sustainabilityCtx = document.getElementById('sustainability-chart');
+            if (sustainabilityCtx) {
+                charts.sustainability = new Chart(sustainabilityCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: [
+                            'Monitoring Coverage',
+                            'Stock Health',
+                            'Habitat Protection',
+                            'Bycatch Reduction',
+                            'IUU Prevention',
+                            'Community Benefits'
+                        ],
+                        datasets: [{
+                            label: '2015',
+                            data: [40, 55, 30, 45, 35, 50],
+                            backgroundColor: 'rgba(93, 92, 222, 0.2)',
+                            borderColor: 'rgba(93, 92, 222, 0.8)',
+                            pointBackgroundColor: 'rgba(93, 92, 222, 1)',
+                            pointBorderColor: '#fff'
+                        }, {
+                            label: '2022',
+                            data: [70, 65, 60, 75, 65, 72],
+                            backgroundColor: 'rgba(58, 124, 165, 0.2)',
+                            borderColor: 'rgba(58, 124, 165, 0.8)',
+                            pointBackgroundColor: 'rgba(58, 124, 165, 1)',
+                            pointBorderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    color: colors.gridColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                },
+                                pointLabels: {
+                                    color: colors.textColor
+                                },
+                                ticks: {
+                                    backdropColor: 'transparent',
+                                    color: colors.textColor
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: colors.textColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Projections chart
+            const projectionsCtx = document.getElementById('projections-chart');
+            if (projectionsCtx) {
+                charts.projections = new Chart(projectionsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['2022', '2025', '2030'],
+                        datasets: [{
+                            label: 'Fisheries',
+                            data: [2040, 2300, 2650],
+                            backgroundColor: colors.colors[0]
+                        }, {
+                            label: 'Aquaculture',
+                            data: [80, 180, 350],
+                            backgroundColor: colors.colors[1]
+                        }, {
+                            label: 'Energy',
+                            data: [95, 180, 320],
+                            backgroundColor: colors.colors[2]
+                        }, {
+                            label: 'Minerals',
+                            data: [120, 150, 190],
+                            backgroundColor: colors.colors[3]
+                        }, {
+                            label: 'Other',
+                            data: [45, 60, 90],
+                            backgroundColor: colors.colors[4]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: colors.textColor
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: $${context.raw} million`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                ticks: {
+                                    color: colors.textColor
+                                },
+                                grid: {
+                                    color: colors.gridColor
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Million USD (Projected)',
+                                    color: colors.textColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize charts when page loads
+        window.addEventListener('load', initCharts);
+    </script>
+</body>
+</html>
